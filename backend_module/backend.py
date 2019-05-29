@@ -1,4 +1,6 @@
+import copy
 import json
+import os
 
 from flask import Flask, jsonify, request, send_file
 
@@ -7,7 +9,16 @@ import backend_module.config as config
 app = Flask(__name__)
 
 items = {}
-with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\sample.json") as f:
+
+
+def get_sample_json():
+    return os.path.realpath(
+        os.path.join(os.getcwd(), 'sample', 'sample.json'))
+
+
+__location__ = get_sample_json()
+
+with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -27,7 +38,7 @@ def contains_in_txt(input_txt, item):
 
 def search_in_file(keyword, item_type):
     output = []
-    for item in items:
+    for item in json_items:
         if (item_type != "" and item[config.ITEM_TYPE] == item_type) or item_type == "":
             if item['name'] == keyword:
                 output = [item] + output
@@ -39,13 +50,17 @@ def search_in_file(keyword, item_type):
 
 
 def find_parents(id):
-    contained = {"children": []}
-    item = items[id]
-    contained["children"].append(item)
-    while item[config.CONTAINED_BY] != "":
-        elem = item[config.CONTAINED_BY]
-        elem["children"] = [item]
-        item = item[config.CONTAINED_BY]
+    sample_items = copy.deepcopy(items)
+    it = sample_items[id]
+    contained = it
+    parent = it[config.CONTAINED_BY]
+    while parent != 0:
+        # contained["children"] = [item]
+        elem = sample_items[parent].copy()
+        elem["children"] = [contained]
+        contained = elem.copy()
+        it = sample_items[parent]
+        parent = it[config.CONTAINED_BY]
         # contained.append({"children": item})
     return contained
 
@@ -57,7 +72,7 @@ def find_children(id, relation):
 
 
 def find_flow(id):
-    response = {"response": []}
+    response = []
     output = items[id]
     output['children'] = find_children(id, config.FEEDS)
     if len(items[id][config.FED_BY]) == 0:
@@ -65,7 +80,7 @@ def find_flow(id):
     for i in items[id][config.FED_BY]:
         elem = items[i]
         elem["children"] = output
-        response["response"].append(elem)
+        response.append(elem)
     return response
 
 
@@ -80,6 +95,34 @@ def search_keyword():
 
         return jsonify(output)
 
+
+@app.route('/get_flow', methods=['GET', 'POST'])
+def get_flow():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = find_flow(id)
+        return jsonify(output)
+
+
+@app.route('/get_children', methods=['GET', 'POST'])
+def get_children():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = find_parents(id)
+        return jsonify(output)
+
+@app.route('/get_node_by_id', methods=['GET', 'POST'])
+def get_node_by_id():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = items[id]
+        return jsonify(output)
 
 @app.route('/flow_test', methods=['GET', 'POST'])
 def flow_test():
