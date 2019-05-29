@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 
@@ -9,13 +10,15 @@ app = Flask(__name__)
 
 items = {}
 
+
 def get_sample_json():
     return os.path.realpath(
         os.path.join(os.getcwd(), 'sample', 'sample.json'))
 
+
 __location__ = get_sample_json()
 
-with open(__location__) as f:
+with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -47,13 +50,17 @@ def search_in_file(keyword, item_type):
 
 
 def find_parents(id):
-    contained = {"children": []}
-    item = items[id]
-    contained["children"].append(item)
-    while item[config.CONTAINED_BY] != "":
-        elem = items[item[config.CONTAINED_BY]]
-        elem["children"] = [item]
-        item = items[item[config.CONTAINED_BY]]
+    sample_items = copy.deepcopy(items)
+    it = sample_items[id]
+    contained = it
+    parent = it[config.CONTAINED_BY]
+    while parent != 0:
+        # contained["children"] = [item]
+        elem = sample_items[parent].copy()
+        elem["children"] = [contained]
+        contained = elem.copy()
+        it = sample_items[parent]
+        parent = it[config.CONTAINED_BY]
         # contained.append({"children": item})
     return contained
 
@@ -65,7 +72,7 @@ def find_children(id, relation):
 
 
 def find_flow(id):
-    response = {"response": []}
+    response = []
     output = items[id]
     output['children'] = find_children(id, config.FEEDS)
     if len(items[id][config.FED_BY]) == 0:
@@ -73,7 +80,7 @@ def find_flow(id):
     for i in items[id][config.FED_BY]:
         elem = items[i]
         elem["children"] = output
-        response["response"].append(elem)
+        response.append(elem)
     return response
 
 
