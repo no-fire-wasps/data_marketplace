@@ -3,7 +3,6 @@ import json
 import os
 
 from flask import Flask, jsonify, request, send_file
-from flask_cors import cross_origin
 
 # -----------------------------------------------------------
 # Try to import the config file, on exception tries to append the current work directory to the sys.path
@@ -16,6 +15,7 @@ except ImportError:
     try:
         if os.getcwd().split('\\')[-1] != 'data_marketplace':
             sys.path.append(os.getcwd())
+        import backend_module.config as config
     except:
         raise ImportError("Unable to import config file.")
 
