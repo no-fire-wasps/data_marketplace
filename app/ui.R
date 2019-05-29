@@ -40,12 +40,12 @@ shinyUI(
         wellPanel(
           fluidRow(
             column(8, textInput("key_words", label = "Key Words", width='100%')),
-            column(1, actionButton("click_search", label = "CLICK ME MFER")),
+            column(1, actionButton("click_search", label = "Search")),
             column(3, uiOutput("type_filter", label = "Key Words", width='100%')))
         ),
         fluidRow(
           box(withSpinner(
-            DT::dataTableOutput('results'), 8), title = strong("frig sakes rick"), width = "100%"))
+            DT::dataTableOutput('results'), 8), title = strong("Results"), width = "100%"))
         #,
         #column(1,actionButton("click_search", label = uiOutput("search"))),
         #column(1,actionButton("click_reset", label = uiOutput("clear_dash"))))

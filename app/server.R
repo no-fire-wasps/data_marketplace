@@ -39,7 +39,13 @@ shinyServer(function(input, output, session) {
                      "description" = unlist(resp$description))
     
     output$results <- DT::renderDataTable({
-      dt <- datatable(df)
+      dt <- datatable(df,
+                      filter = "none", selection = "single", rownames = FALSE,
+                      option = list(autoWidth = FALSE, dom = 'ltp', 
+                                    columnDefs = list(list(targets=c(0), visible=TRUE, width='75'),
+                                                      list(targets=c(1), visible=TRUE, width='200'),
+                                                      list(targets=c(2), visible=TRUE, width='500'))),
+                      style = "bootstrap", class = "table-bordered stripe")
     })
   })
   
