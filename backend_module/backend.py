@@ -35,7 +35,7 @@ def contains_in_txt(input_txt, item):
 
 def search_in_file(keyword, item_type):
     output = []
-    for item in items:
+    for item in json_items:
         if (item_type != "" and item[config.ITEM_TYPE] == item_type) or item_type == "":
             if item['name'] == keyword:
                 output = [item] + output
