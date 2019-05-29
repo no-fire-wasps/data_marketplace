@@ -1,13 +1,13 @@
 import json
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 
 import backend_module.config as config
 
 app = Flask(__name__)
 
 items = {}
-with open("C:\\Users\e67936\PycharmProjects\data_marketplace\sample.json") as f:
+with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\sample.json") as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -80,13 +80,21 @@ def search_keyword():
 
         return jsonify(output)
 
+
 @app.route('/flow_test', methods=['GET', 'POST'])
 def flow_test():
     if request.method == 'POST':
-        with open("C:\\Users\\e67936\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
+        with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\sample.json") as f:
             flow_json_items = json.load(f)
     return jsonify(flow_json_items['response'])
 
+
+@app.route('/test_js', methods=['GET', 'POST'])
+def test_js():
+    if request.method == 'GET':
+        return send_file(
+            'C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\TreeDiagram.html'
+        )
 
 app.debug = True
 app.run()
