@@ -3,7 +3,6 @@ import json
 import os
 
 from flask import Flask, jsonify, request, send_file
-from flask_cors import cross_origin
 
 import backend_module.config as config
 
@@ -19,7 +18,7 @@ def get_sample_json():
 
 __location__ = get_sample_json()
 
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
+with open(__location__) as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -113,8 +112,9 @@ def get_children():
         output = {}
         input = request.json
         id = input["id"]
-        output["response"] = find_parents(id)
+        output["response"] = [find_parents(id)]
         return jsonify(output)
+
 
 @app.route('/get_node_by_id', methods=['GET', 'POST'])
 def get_node_by_id():
@@ -125,8 +125,8 @@ def get_node_by_id():
         output["response"] = items[id]
         return jsonify(output)
 
+
 @app.route('/flow_test', methods=['GET', 'POST'])
-@cross_origin
 def flow_test():
     if request.method == 'POST':
         with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\sample.json") as f:
@@ -138,7 +138,7 @@ def flow_test():
 def test_js():
     if request.method == 'GET':
         return send_file(
-            'C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\JavaScript\\TreeDiagram.html'
+            'C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\TreeDiagram.html'
         )
 
 app.debug = True
