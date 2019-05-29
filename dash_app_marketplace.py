@@ -5,6 +5,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from datetime import datetime
 import pandas as pd
+import base64
 
 import json
 
@@ -21,6 +22,10 @@ USERNAME_PASSWORD_PAIRS = [['username', 'password'],
 
 app = dash.Dash()
 auth = dash_auth.BasicAuth(app, USERNAME_PASSWORD_PAIRS)
+
+def encode_image(image_file):
+    encoded = base64.b64encode(open(image_file, 'rb').read())
+    return 'data:image/png;base64,{}'.format(encoded.decode())
 
 keywords = []
 
@@ -66,7 +71,8 @@ app.layout = html.Div([
                          {'label': 'Data Set', 'value': 'Data Set'},
                          {'label': 'Table', 'value': 'Table'},
                          {'label': 'Column', 'value': 'Column'},
-                         {'label': 'Description', 'value': 'Description'}],
+                         {'label': 'Description', 'value': 'Description'},
+                         {'label': 'Data flow', 'value': 'Data flow'}],
                 value='Search everything',
                 style={'fontSize': 18}
             ),
@@ -74,7 +80,11 @@ app.layout = html.Div([
 
     html.Div([
     dcc.Markdown(id = 'markdown')
-    ])
+    ]),
+
+    html.Div([
+        html.Img(id='hover-image', src='children', height=300)
+        ], style={'paddingTop':35})
 
 
 ])
@@ -91,6 +101,21 @@ def update_description(kw, tag):
         index = names.index(kw)
         desc = data[index]['description']
         return desc
+
+
+@app.callback(
+    Output('hover-image', 'src'),
+    [Input('search-term-in', 'value'),
+     Input('tag', 'value')])
+def callback_image(kw, tag):
+    if tag == 'Data flow':
+        if kw in ['CLV Model', 'CustomerLifetimeValue_AC']:
+            image_file = '/Users/astrophy/PycharmProjects/data_marketplace/clv_model.png'
+        elif kw in ['pc_policy', 'policycenter']:
+            image_file = '/Users/astrophy/PycharmProjects/data_marketplace/policy_center.png'
+        elif kw in ['clv_score', 'clv score']:
+            image_file = '/Users/astrophy/PycharmProjects/data_marketplace/clv.png'
+    return encode_image(image_file)
 
 
 
