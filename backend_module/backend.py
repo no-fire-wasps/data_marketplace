@@ -80,11 +80,12 @@ def search_keyword():
 
         return jsonify(output)
 
-
+@app.route('/flow_test', methods=['GET', 'POST'])
 def flow_test():
-    with open("C:\\Users\\e67936\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
-        flow_json_items = json.load(f)
-    return flow_json_items['response']
+    if request.method == 'POST':
+        with open("C:\\Users\\e67936\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
+            flow_json_items = json.load(f)
+    return jsonify(flow_json_items['response'])
 
 
 app.debug = True

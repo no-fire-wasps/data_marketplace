@@ -50,41 +50,27 @@
 <script>
 
 
+// for sending HTTP requests
+ function send(method, url, data, callback){
+       let xhr = new XMLHttpRequest();
+       xhr.onload = function() {
+           if (xhr.status !== 200) callback("[" + xhr.status + "]" + xhr.responseText, null);
+           else callback(null, JSON.parse(xhr.responseText));
+       };
+       xhr.open(method, url, true);
+       if (!data) xhr.send();
+       else{
+           xhr.setRequestHeader('Content-Type', 'application/json');
+           xhr.send(JSON.stringify(data));
+       }
+   };
 
-let treeData = [
-  {
-    "name": "Database",
-    "parent": "Scheama",
-    "children": [
-      {
-        "name": "CLV Scores",
-        "parent": "Database",
-        "children": [
-          {
-            "name": "CLV Report",
-            "parent": "CLV Scores"
-          },
-          {
-            "name": "Daughter of A",
-            "parent": "CLV Scores"
-          }
-        ]
-      },
-      {
-        "name": "Policy Data",
-        "parent": "Database",
-        "children": [
-            {
-              "name": "Daughter of A",
-              "parent": "Policy Data"
-            }
-        ]
-      }
-    ]
-  }
-];
+send('POST', 'http://localhost:5000/flow_test', {"keyword":"score", "item_type":""}, function(err,res) {
+    if (err) return Null;
+    tree_data(JSON.parse(res))
+});
 
-
+function tree_data(treeData){
     // ************** Generate the tree diagram	 *****************
 var margin = {top: 20, right: 120, bottom: 20, left: 120},
 	width = 960 - margin.right - margin.left,
@@ -114,11 +100,11 @@ root = treeData[0];
 root.x0 = height / 2;
 root.y0 = 0;
 
-update(root);
+update(root)};
 
 d3.select(self.frameElement).style("height", "500px");
 
-function update(source) {
+function update(source){
 
   // Compute the new tree layout.
   var nodes = tree.nodes(root).reverse(),
@@ -204,6 +190,7 @@ function update(source) {
 	d.y0 = d.y;
   });
 }
+
 
 // Toggle children on click.
 function click(d) {
