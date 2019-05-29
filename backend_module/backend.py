@@ -43,9 +43,9 @@ def find_parents(id):
     item = items[id]
     contained["children"].append(item)
     while item[config.CONTAINED_BY] != "":
-        elem = item[config.CONTAINED_BY]
+        elem = items[item[config.CONTAINED_BY]]
         elem["children"] = [item]
-        item = item[config.CONTAINED_BY]
+        item = items[item[config.CONTAINED_BY]]
         # contained.append({"children": item})
     return contained
 
@@ -78,6 +78,26 @@ def search_keyword():
         item_type = input[config.ITEM_TYPE]
         output["response"] = search_in_file(keyword, item_type)
 
+        return jsonify(output)
+
+
+@app.route('/get_flow', methods=['GET', 'POST'])
+def get_flow():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = find_flow(id)
+        return jsonify(output)
+
+
+@app.route('/get_children', methods=['GET', 'POST'])
+def get_children():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = find_parents(id)
         return jsonify(output)
 
 
