@@ -65,7 +65,7 @@ var tree = d3.layout.tree()
        }
    };
 
-send('POST', 'http://localhost:5000/flow_test', {"keyword":"score", "item_type":""}, function(err,res) {
+send('POST', 'http://localhost:5000/get_children', {"id":1}, function(err,res) {
     if (err) return null;
     tree_data(res, tree);
 });

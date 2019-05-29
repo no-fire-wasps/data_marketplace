@@ -18,7 +18,7 @@ def get_sample_json():
 
 __location__ = get_sample_json()
 
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
+with open("C:\\Users\e67936\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
