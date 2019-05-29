@@ -16,7 +16,7 @@ except ImportError:
     try:
         if os.getcwd().split('\\')[-1] != 'data_marketplace':
             sys.path.append(os.getcwd())
-        import backend_module.config as config
+        import config
     except:
         raise ImportError("Unable to import config file.")
 
