@@ -1,4 +1,5 @@
 import json
+import os
 
 from flask import Flask, jsonify, request
 
@@ -7,7 +8,14 @@ import backend_module.config as config
 app = Flask(__name__)
 
 items = {}
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\sample.json") as f:
+
+def get_sample_json():
+    return os.path.realpath(
+        os.path.join(os.getcwd(), 'sample', 'sample.json'))
+
+__location__ = get_sample_json()
+
+with open(__location__) as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
