@@ -6,6 +6,11 @@ from dash.dependencies import Input, Output, State
 from datetime import datetime
 import pandas as pd
 
+import json
+
+with open(r'/Users/astrophy/PycharmProjects/data_marketplace/data_marketplace_data_V2.json') as json_file:
+    data = json.load(json_file)['items']
+
 USERNAME_PASSWORD_PAIRS = [['username', 'password'],
                            ['Kancharla', '24/06'],
                            ['Brown', '06/08'],
@@ -17,15 +22,30 @@ USERNAME_PASSWORD_PAIRS = [['username', 'password'],
 app = dash.Dash()
 auth = dash_auth.BasicAuth(app, USERNAME_PASSWORD_PAIRS)
 
+keywords = []
+
+for i in range(len(data)):
+    item = data[i]['keywords']
+    keywords.extend(item)
+
+keywords = list(set(keywords))
+
+names = []
+
+for i in range(len(data)):
+    name = data[i]['name']
+    names.append(name)
+
+
 app.layout = html.Div([
     html.H1(children='Search Page'),
 
     html.Div([
-        dcc.Input(
+        dcc.Dropdown(
             id='search-term-in',
-            type='text',
+            options=[{'label': i, 'value': i} for i in names],
             value='Search here...',
-            style={'fontSize': 28}
+            style={'fontSize': 18}
         ),
     ],
         style={'width': '40%', 'display': 'inline-block'}),
@@ -41,17 +61,37 @@ app.layout = html.Div([
 
     html.Div([
             dcc.Dropdown(
-                id='xaxis-column',
+                id='tag',
                 options=[{'label': 'Database', 'value': 'Database'},
                          {'label': 'Data Set', 'value': 'Data Set'},
                          {'label': 'Table', 'value': 'Table'},
-                         {'label': 'Column', 'value': 'Column'}],
-                value='Search everything'
+                         {'label': 'Column', 'value': 'Column'},
+                         {'label': 'Description', 'value': 'Description'}],
+                value='Search everything',
+                style={'fontSize': 18}
             ),
-    ], style={'width': '40%', 'float': 'right', 'display':'inline-block'})
+    ], style={'width': '40%', 'float': 'right', 'display':'inline-block'}),
+
+    html.Div([
+    dcc.Markdown(id = 'markdown')
+    ])
 
 
 ])
+
+
+
+@app.callback(
+    Output(component_id='markdown', component_property='children'),
+    [Input(component_id='search-term-in', component_property='value'),
+     Input(component_id='tag', component_property='value')]
+)
+def update_description(kw, tag):
+    if tag == 'Description':
+        index = names.index(kw)
+        desc = data[index]['description']
+        return desc
+
 
 
 if __name__ == '__main__':
