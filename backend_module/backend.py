@@ -108,6 +108,14 @@ def get_children():
         output["response"] = find_parents(id)
         return jsonify(output)
 
+@app.route('/get_node_by_id', methods=['GET', 'POST'])
+def get_node_by_id():
+    if request.method == 'POST':
+        output = {}
+        input = request.json
+        id = input["id"]
+        output["response"] = items[id]
+        return jsonify(output)
 
 app.debug = True
 app.run()
