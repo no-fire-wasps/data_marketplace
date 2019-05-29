@@ -1,33 +1,23 @@
 import dash
 import dash_auth
+import pandas as pd
+import numpy as np
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from datetime import datetime
-import pandas as pd
-import base64
-
+from shared_utilities.utilities import encode_image, generate_table
+from shared_utilities.authentication import USERNAME_PASSWORD_PAIRS
 import json
 
 with open(r'/Users/astrophy/PycharmProjects/data_marketplace/data_marketplace_data_V2.json') as json_file:
     data = json.load(json_file)['items']
 
-USERNAME_PASSWORD_PAIRS = [['username', 'password'],
-                           ['Kancharla', '24/06'],
-                           ['Brown', '06/08'],
-                           ['Heusen', '14/03',],
-                           ['Jalalpour', '07/02'],
-                           ['Wickens', '27/03'],
-                           ['Eyre', '01/12']]
-
 app = dash.Dash()
 auth = dash_auth.BasicAuth(app, USERNAME_PASSWORD_PAIRS)
 
-def encode_image(image_file):
-    encoded = base64.b64encode(open(image_file, 'rb').read())
-    return 'data:image/png;base64,{}'.format(encoded.decode())
-
 keywords = []
+
+df = pd.DataFrame({'Contains': np.nan, 'Data Feeds from': np.nan, 'Sends data out to': np.nan, 'Keywords': np.nan})
 
 for i in range(len(data)):
     item = data[i]['keywords']
@@ -53,16 +43,16 @@ app.layout = html.Div([
             style={'fontSize': 18}
         ),
     ],
-        style={'width': '40%', 'display': 'inline-block'}),
+        style={'width': '48%', 'display': 'inline-block'}),
 
-    html.Div([
-        html.Button(
-            id='search-button',
-            n_clicks=0,
-            children='Search',
-            style={'fontSize':18, 'marginLeft':'30px'}
-        ),
-    ], style={'width': '15%', 'display':'inline-block'}),
+    # html.Div([
+    #     html.Button(
+    #         id='search-button',
+    #         n_clicks=0,
+    #         children='Search',
+    #         style={'fontSize':18, 'marginLeft':'30px'}
+    #     ),
+    # ], style={'width': '15%', 'display':'inline-block'}),
 
     html.Div([
             dcc.Dropdown(
@@ -76,15 +66,20 @@ app.layout = html.Div([
                 value='Search everything',
                 style={'fontSize': 18}
             ),
-    ], style={'width': '40%', 'float': 'right', 'display':'inline-block'}),
+    ], style={'width': '48%', 'float': 'right', 'display':'inline-block'}),
 
     html.Div([
-    dcc.Markdown(id = 'markdown')
+        dcc.Markdown(id='markdown')
     ]),
 
     html.Div([
         html.Img(id='hover-image', src='children', height=300)
-        ], style={'paddingTop':35})
+        ], style={'paddingTop': 35, 'float': 'right'}),
+
+    html.H4(id='info_page', children='Info Page'),
+    html.Table(id='table_comp'),
+    generate_table(df)
+
 
 
 ])
@@ -117,6 +112,10 @@ def callback_image(kw, tag):
             image_file = '/Users/astrophy/PycharmProjects/data_marketplace/clv.png'
     return encode_image(image_file)
 
+# @app.callback(
+#     Output('table_comp', 'value'),
+#     [Input('search-term-in', 'value')])
+# def create_info(kw):
 
 
 if __name__ == '__main__':
