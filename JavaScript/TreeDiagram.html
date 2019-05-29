@@ -218,14 +218,21 @@ function tree_data(treeData, tree) {
 
 // Toggle children on click.
     function click(d) {
-        if (d.children) {
+        console.log(d);
+        if ( !isNull( d.children )) {
             d._children = d.children;
             d.children = null;
-        } else {
+        } else if ( isNull( d.children ) && !isNull( d._children ) ) {
             d.children = d._children;
             d._children = null;
         }
+        console.log(d);
         update(d);
+
+        function isNull( val ) {
+            return val === undefined ||
+                    val === null;
+        }
     }
 };
 </script>
