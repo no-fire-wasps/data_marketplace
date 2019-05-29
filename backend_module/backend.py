@@ -4,6 +4,8 @@ import os
 
 from flask import Flask, jsonify, request, send_file
 
+import backend_module.config as config
+
 
 app = Flask(__name__)
 
