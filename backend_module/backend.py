@@ -3,7 +3,7 @@ import json
 import os
 
 from flask import Flask, jsonify, request, send_file
-from flask_cors import cross_origin
+from flask_cors import cross_origin, CORS
 
 import backend_module.config as config
 
@@ -19,7 +19,7 @@ def get_sample_json():
 
 __location__ = get_sample_json()
 
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
+with open('C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\backend_module\\sample\\sample.json') as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -125,11 +125,11 @@ def get_node_by_id():
         output["response"] = items[id]
         return jsonify(output)
 
+
 @app.route('/flow_test', methods=['GET', 'POST'])
-@cross_origin
 def flow_test():
     if request.method == 'POST':
-        with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\sample.json") as f:
+        with open("C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
             flow_json_items = json.load(f)
     return jsonify(flow_json_items['response'])
 
@@ -140,6 +140,7 @@ def test_js():
         return send_file(
             'C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\JavaScript\\TreeDiagram.html'
         )
+
 
 app.debug = True
 app.run()
