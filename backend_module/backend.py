@@ -3,9 +3,21 @@ import json
 import os
 
 from flask import Flask, jsonify, request, send_file
-from flask_cors import cross_origin, CORS
 
-import backend_module.config as config
+# -----------------------------------------------------------
+# Try to import the config file, on exception tries to append the current work directory to the sys.path
+# Happens when running the code outside of Pycharm IDE
+
+try:
+    import backend_module.config as config
+except ImportError:
+    import sys
+    try:
+        if os.getcwd().split('\\')[-1] != 'data_marketplace':
+            sys.path.append(os.getcwd())
+        import config
+    except:
+        raise ImportError("Unable to import config file.")
 
 app = Flask(__name__)
 
@@ -19,7 +31,7 @@ def get_sample_json():
 
 __location__ = get_sample_json()
 
-with open('C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\backend_module\\sample\\sample.json') as f:
+with open(__location__) as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -113,8 +125,9 @@ def get_children():
         output = {}
         input = request.json
         id = input["id"]
-        output["response"] = find_parents(id)
+        output["response"] = [find_parents(id)]
         return jsonify(output)
+
 
 @app.route('/get_node_by_id', methods=['GET', 'POST'])
 def get_node_by_id():
@@ -129,7 +142,7 @@ def get_node_by_id():
 @app.route('/flow_test', methods=['GET', 'POST'])
 def flow_test():
     if request.method == 'POST':
-        with open("C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
+        with open("C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\sample.json") as f:
             flow_json_items = json.load(f)
     return jsonify(flow_json_items['response'])
 
@@ -138,9 +151,8 @@ def flow_test():
 def test_js():
     if request.method == 'GET':
         return send_file(
-            'C:\\Users\\e93583\\PycharmProjects\\data_marketplace\\JavaScript\\TreeDiagram.html'
+            'C:\\Users\\e808937\\Documents\\Develop\\Python\\data_marketplace\\JavaScript\\TreeDiagram.html'
         )
-
 
 app.debug = True
 app.run()

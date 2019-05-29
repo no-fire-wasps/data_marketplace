@@ -45,10 +45,10 @@ shinyUI(
         ),
         fluidRow(
           box(withSpinner(
-            DT::dataTableOutput('results'), 8), title = strong("Whatever the frick"), width = "100%"))
-          #,
-          #column(1,actionButton("click_search", label = uiOutput("search"))),
-          #column(1,actionButton("click_reset", label = uiOutput("clear_dash"))))
+            DT::dataTableOutput('results'), 8), title = strong("frig sakes rick"), width = "100%"))
+        #,
+        #column(1,actionButton("click_search", label = uiOutput("search"))),
+        #column(1,actionButton("click_reset", label = uiOutput("clear_dash"))))
       )
     )
   )

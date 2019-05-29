@@ -65,13 +65,13 @@ var tree = d3.layout.tree()
        }
    };
 
-send('POST', 'http://localhost:5000/get_children', {"id": 3}, function(err,res) {
+send('POST', 'http://localhost:5000/get_children', {"id":2}, function(err,res) {
     if (err) return null;
     tree_data(res, tree);
 });
 
 function tree_data(treeData, tree) {
-    console.log(treeData[0]);
+    console.log(treeData["response"][0]);
     // ************** Generate the tree diagram	 *****************
     var margin = {top: 20, right: 120, bottom: 20, left: 120},
         width = 960 - margin.right - margin.left,
@@ -98,7 +98,7 @@ function tree_data(treeData, tree) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    root = treeData[0];
+    root = treeData["response"][0];
     root.x0 = height / 2;
     root.y0 = 0;
 
@@ -218,14 +218,21 @@ function tree_data(treeData, tree) {
 
 // Toggle children on click.
     function click(d) {
-        if (d.children) {
+        console.log(d);
+        if ( !isNull( d.children )) {
             d._children = d.children;
             d.children = null;
-        } else {
+        } else if ( isNull( d.children ) && !isNull( d._children ) ) {
             d.children = d._children;
             d._children = null;
         }
+        console.log(d);
         update(d);
+
+        function isNull( val ) {
+            return val === undefined ||
+                    val === null;
+        }
     }
 };
 </script>
