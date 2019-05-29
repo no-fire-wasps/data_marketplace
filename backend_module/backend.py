@@ -82,9 +82,9 @@ def search_keyword():
         return jsonify(output)
 
 def flow_test():
-    output = pd.read_json('file://localhost/Users/e67936/PycharmProjects/data_marketplace/JavaScript/sample.json')
-
-    return print(output)
+    with open("C:\\Users\\e67936\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
+        json_items = json.load(f)
+    return json_items["response"]
 
 app.debug = True
 app.run()
