@@ -1,5 +1,4 @@
 import json
-# import pandas as pd
 
 from flask import Flask, jsonify, request
 
@@ -83,10 +82,8 @@ def search_keyword():
 
 
 def flow_test():
-    flow_items = {}
     with open("C:\\Users\\e67936\\PycharmProjects\\data_marketplace\\JavaScript\\sample.json") as f:
         flow_json_items = json.load(f)
-
     return flow_json_items['response']
 
 
