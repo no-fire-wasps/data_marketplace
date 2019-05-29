@@ -1,0 +1,27 @@
+{"response":[
+  {
+    "name": "Database",
+    "parent": "null",
+    "children": [
+      {
+        "name": "CLV Scores",
+        "parent": "Database",
+        "children": [
+          {
+            "name": "CLV Report",
+            "parent": "CLV Scores"
+          },
+          {
+            "name": "Daughter of A",
+            "parent": "CLV Scores"
+          }
+        ]
+      },
+      {
+        "name": "Policy Data",
+        "parent": "Database"
+      }
+    ]
+  }
+]
+}
