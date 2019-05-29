@@ -16,28 +16,64 @@ shinyServer(function(input, output, session) {
   ## Request API function
   
   post_request_dku_api <- function(endpoint, payload){
-    raw_response <- POST(url = endpoint, body = payload, encode = "json")
-    return(raw_response)
+    response_raw <- POST(url = endpoint, body = payload, encode = "json")
+    #response_clean <- content(response_raw)$response
+    return(content(response_raw))
   }
   
   ## API: Intel Rules
   api_search_keywords <- reactive({
     payload <- list(keyword = input$key_words, item_type = "")
-    raw_response <- post_request_dku_api(SEARCH_KEYWORD_ENDPOINT, payload)
-    content(raw_response)$response
+    response <- post_request_dku_api(SEARCH_KEYWORD_ENDPOINT, payload)
+    response
   })
   
   observeEvent({input$click_search}, {
+    # output$results <- DT::renderDataTable({
+    #   # dt <- datatable(df_filtered(), colnames = c(dict[["industry_code"]][bool_lang()], dict[["segment"]][bool_lang()], dict[["description"]][bool_lang()]),
+    #   #                 filter = "none", selection = "single", rownames = FALSE,
+    #   #                 options = list(language = list(lengthMenu = paste(dict[["ot_lengthmenu"]][bool_lang()]),
+    #   #                                                paginate = list(previous = paste(dict[["ot_previous"]][bool_lang()]), `next` = paste(dict[["ot_next"]][bool_lang()]))),
+    #   #                                autoWidth = FALSE, dom = 'ltp', columnDefs = list(list(targets=c(0), visible=TRUE, width='75'),
+    #   #                                                                                  list(targets=c(1), visible=TRUE, width='200'),
+    #   #                                                                                  list(targets=c(2), visible=TRUE, width='500'))), style = "bootstrap", class = "table-bordered stripe")
+    #   dt <- datatable(api_search_keywords()$clean)
+     # })
+    #df <- api_
+    ## CALL TEH API
+    resp <- api_search_keywords()
+    ## FOR SOME REASON WORKING WITH JSON SUCKS IN R SORRY
+    resp <- data.frame(jsonlite::fromJSON(jsonlite::toJSON(resp$response)))
+    df <- data.frame("item_type" = unlist(resp$item_type),
+                     "name" = unlist(resp$name),
+                     "description" = unlist(resp$description))
+    
     output$results <- DT::renderDataTable({
-      # dt <- datatable(df_filtered(), colnames = c(dict[["industry_code"]][bool_lang()], dict[["segment"]][bool_lang()], dict[["description"]][bool_lang()]),
-      #                 filter = "none", selection = "single", rownames = FALSE,
-      #                 options = list(language = list(lengthMenu = paste(dict[["ot_lengthmenu"]][bool_lang()]),
-      #                                                paginate = list(previous = paste(dict[["ot_previous"]][bool_lang()]), `next` = paste(dict[["ot_next"]][bool_lang()]))),
-      #                                autoWidth = FALSE, dom = 'ltp', columnDefs = list(list(targets=c(0), visible=TRUE, width='75'),
-      #                                                                                  list(targets=c(1), visible=TRUE, width='200'),
-      #                                                                                  list(targets=c(2), visible=TRUE, width='500'))), style = "bootstrap", class = "table-bordered stripe")
-      dt <- datatable(api_search_keywords())
-      })
+      dt <- datatable(df)
+    })
+    # inforce <- data.frame(matrix(unlist(api_search_keywords()), nrow=length(api_search_keywords()), byrow = T), stringsAsFactors = FALSE)
+    # 
+    # names(inforce) <- names(api_search_keywords()[[1]])
+    
+    #print(inforce$contains)
+    # output$results <- DT::renderDataTable({
+    #   DT <- datatable(data = inforce,
+    #                   class = "display stripe hover",
+    #                   filter = "none",
+    #                   rownames = FALSE,
+    #                   escape = FALSE,
+    #                   selection = "single",
+    #                   options = list(
+    #                     dom = 'ltip',
+    #                     order = list(list(5, 'desc')),
+    #                     pageLength = 6,
+    #                     lengthMenu = c(6, 10, 100),
+    #                     scrollcollapse = TRUE,
+    #                     scroller = TRUE,
+    #                     scrollY = '30vh'
+    #                   )
+    #   )
+    # })
   })
   
   output$type_filter <- renderUI({
