@@ -3,9 +3,22 @@ import json
 import os
 
 from flask import Flask, jsonify, request, send_file
+from flask_cors import cross_origin
 
-import backend_module.config as config
+# -----------------------------------------------------------
+# Try to import the config file, on exception tries to append the current work directory to the sys.path
+# Happens when running the code outside of Pycharm IDE
 
+try:
+    import backend_module.config as config
+except ImportError:
+    import sys
+    try:
+        if os.getcwd().split('\\')[-1] != 'data_marketplace':
+            sys.path.append(os.getcwd())
+        import backend_module.config as config
+    except:
+        raise ImportError("Unable to import config file.")
 
 app = Flask(__name__)
 
@@ -19,7 +32,7 @@ def get_sample_json():
 
 __location__ = get_sample_json()
 
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\\backend_module\sample\sample.json") as f:
+with open(__location__) as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
