@@ -4,20 +4,6 @@ import os
 
 from flask import Flask, jsonify, request, send_file
 
-# -----------------------------------------------------------
-# Try to import the config file, on exception tries to append the current work directory to the sys.path
-# Happens when running the code outside of Pycharm IDE
-
-try:
-    import backend_module.config as config
-except ImportError:
-    import sys
-    try:
-        if os.getcwd().split('\\')[-1] != 'data_marketplace':
-            sys.path.append(os.getcwd())
-        import backend_module.config as config
-    except:
-        raise ImportError("Unable to import config file.")
 
 app = Flask(__name__)
 
