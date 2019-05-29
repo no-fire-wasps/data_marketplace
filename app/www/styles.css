@@ -1,0 +1,46 @@
+.info {
+  box-shadow:none;
+}
+
+/*Header Bar*/
+  .skin-black .main-header .navbar{
+    background-color: #222d32 !important;
+  }
+
+/*background color*/
+  .content-wrapper{
+    background-color:#FFFFFF;
+  }
+
+/*Phalanx logo box*/ 
+  .skin-black .main-header .logo {
+    background-color: #222d32 !important;
+      border-right:#222d32 !important;
+      color:#FFFFFF !important;
+      font-weight: bold;
+  }
+
+/*Move number of results displayed setting to the right*/
+  .dataTables_length{
+    float:right !important;
+  }
+
+table, td, th {
+  font-size: 12px;
+  text-align: center;
+  vertical-align: text-top;
+}
+
+#feedback_dt.dataTable {
+vertical-align: baseline;
+}
+
+#feedback_btn {
+background-color:#008CBA; 
+  color: white;
+}
+
+#submit {
+background-color:#008CBA; 
+  color: white;
+}
