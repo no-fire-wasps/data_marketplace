@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 
 from flask import Flask, jsonify, request
 
@@ -7,7 +8,7 @@ import backend_module.config as config
 app = Flask(__name__)
 
 items = {}
-with open("C:\\Users\e93583\PycharmProjects\data_marketplace\sample.json") as f:
+with open("C:\\Users\e67936\PycharmProjects\data_marketplace\sample.json") as f:
     json_items = json.load(f)['items']
     for i in json_items:
         items[i['id']] = i
@@ -80,6 +81,10 @@ def search_keyword():
 
         return jsonify(output)
 
+def flow_test():
+    output = pd.read_json('file://localhost/Users/e67936/PycharmProjects/data_marketplace/JavaScript/sample.json')
+
+    return print(output)
 
 app.debug = True
 app.run()
